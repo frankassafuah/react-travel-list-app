@@ -7,11 +7,16 @@ const initialItems = [
 ];
 
 export default function App() {
+  const [items, setItems] = useState([]);
+
+  function handleAddItem(item) {
+    setItems((items) => [...items, item]);
+  }
   return (
     <div className="app">
       <Logo />
-      <Form />
-      <PackingList />
+      <Form onAddItem={handleAddItem} />
+      <PackingList items={items} />
       <Stats />
     </div>
   );
@@ -21,17 +26,18 @@ function Logo() {
   return <h1>🏝️Far Away🧳</h1>;
 }
 
-function Form() {
+function Form({ onAddItem }) {
   const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState(1);
 
   function handleSubmit(e) {
     e.preventDefault();
     const newItem = { description, quantity, packed: false, id: Date.now() };
-    initialItems.push(newItem);
+    onAddItem(newItem);
     setQuantity(1);
     setDescription("");
   }
+  
   return (
     <form className="add-form" onSubmit={handleSubmit}>
       <h3>what do you need for your 😍 trip</h3>
@@ -58,11 +64,11 @@ function Form() {
   );
 }
 
-function PackingList() {
+function PackingList({ items }) {
   return (
     <div className="list">
       <ul>
-        {initialItems.map((item) => (
+        {items.map((item) => (
           <Item item={item} key={item.id} />
         ))}
       </ul>
